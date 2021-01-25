@@ -36,8 +36,8 @@ public class ProductoController implements Serializable {
     double totalPagar = 0.0;
     int cantidad = 1;
     int contador = 0;
-    private int testOk=0;
-    logCarritoCompras log= new logCarritoCompras();
+    private int testOk = 0;
+    logCarritoCompras log = new logCarritoCompras();
 
     /**
      * Creates a new instance of ProductoController
@@ -49,10 +49,11 @@ public class ProductoController implements Serializable {
     @PostConstruct
     public void inicio() {
         try {
-        facadeImpl = new ProductoFacadeImpl();
-        listProduct = facadeImpl.listarProductoService();
+            facadeImpl = new ProductoFacadeImpl();
+            listProduct = facadeImpl.listarProductoService();
         } catch (Exception e) {
             log.setLogError("error en metodo de Inicio, consultando lista de productos" + e.getMessage());
+            testOk = 1;
         }
     }
 
@@ -63,6 +64,7 @@ public class ProductoController implements Serializable {
         } catch (Exception e) {
             System.out.println("Error metodo int: " + e.getMessage());
             log.setLogError("error al Iniciar" + e.getMessage());
+            testOk = 1;
             return "inicio";
         }
     }
@@ -83,7 +85,7 @@ public class ProductoController implements Serializable {
             contador = listaCarrito.size();
         } catch (Exception e) {
             log.setLogError("error al consultar producto por id:" + e.getMessage());
-            testOk= 1;
+            testOk = 1;
         }
         return testOk;
     }
@@ -99,47 +101,61 @@ public class ProductoController implements Serializable {
             carrito.setNombre(productoDto1.getNombres());
             carrito.setDescripcion(productoDto1.getDescripcion());
             carrito.setPrecioCompra(productoDto1.getPrecio());
-            carrito.setCantidad(cantidad + 1);
+            carrito.setCantidad(cantidad);
             carrito.setSubTotal(cantidad * productoDto1.getPrecio());
             listaCarrito.add(carrito);
             contador = listaCarrito.size();
             for (int i = 0; i < listaCarrito.size(); i++) {
                 totalPagar = totalPagar + listaCarrito.get(i).getSubTotal();
             }
+            return "Carrito";
         } catch (Exception e) {
             log.setLogError("error al consultar producto por id:" + e.getMessage());
+            testOk = 1;
+            return "inicio";
         }
-        return "Carrito";
     }
-    
-    public void realizarPago(){
+
+    public void realizarPago() {
         try {
-            if(!listaCarrito.isEmpty()){
-            FacesMessage facesMessage= new FacesMessage(FacesMessage.SEVERITY_INFO, "Pago Exitoso", null);
-            FacesContext.getCurrentInstance().addMessage(null, facesMessage);
-            }else{
-                FacesMessage facesMessage= new FacesMessage(FacesMessage.SEVERITY_ERROR, "Pago Exitoso", null);
-            FacesContext.getCurrentInstance().addMessage(null, facesMessage);
+            if (!listaCarrito.isEmpty()) {
+                FacesMessage facesMessage = new FacesMessage(FacesMessage.SEVERITY_INFO, "Exitoso", "Pago Exitoso");
+                FacesContext.getCurrentInstance().addMessage(null, facesMessage);
+            } else {
+                FacesMessage facesMessage = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Pago Exitoso");
+                FacesContext.getCurrentInstance().addMessage(null, facesMessage);
             }
         } catch (Exception e) {
-            log.setLogError("Error al realizar el pago:" + e.getMessage());
+            log.setLogError("Error al realizar el pago:" + e);
+            testOk = 1;
         }
     }
 
     public void eliminarProducto(int id) {
-        for (int i = 0; i < listaCarrito.size(); i++) {
-            if(listaCarrito.get(i).getIdProducto() == id){
-                listaCarrito.remove(i);
+        try {
+            for (int i = 0; i < listaCarrito.size(); i++) {
+                if (listaCarrito.get(i).getIdProducto() == id) {
+                    listaCarrito.remove(i);
+                }
             }
+        } catch (Exception e) {
+            log.setLogError("error al eliminar producto del carro :" + e.getMessage() + e);
+            testOk = 1;
         }
     }
 
     public String verCarrito() {
-        totalPagar = 0.00;
-        for (int i = 0; i < listaCarrito.size(); i++) {
-            totalPagar = totalPagar + listaCarrito.get(i).getSubTotal();
+        try {
+            totalPagar = 0.00;
+            for (int i = 0; i < listaCarrito.size(); i++) {
+                totalPagar = totalPagar + listaCarrito.get(i).getSubTotal();
+            }
+            return "Carrito";
+        } catch (Exception e) {
+            log.setLogError("Error al ver carrito: " +e.getMessage());
+            testOk=1;
+            return "home";
         }
-        return "Carrito";
     }
 
     public ProductoDto getListProduct() {
@@ -206,5 +222,4 @@ public class ProductoController implements Serializable {
         this.testOk = testOk;
     }
 
-    
 }
