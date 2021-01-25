@@ -44,10 +44,10 @@
                                     <label>#{pro.descripcion}</label>
                                     <div>
                                         <p:commandButton styleClass="btn btn-outline-success" value="Agregar a carrito"
-                                                         update="idCarrio, form"
+                                                         update="form"
                                                          action="#{productoController.consultarProducto(pro.idProducto)}"></p:commandButton>
                                         <p:commandButton styleClass="btn btn-primary" value="Comprar"
-                                                         action="#{productoController.hacerCompra()}"></p:commandButton>
+                                                         action="#{productoController.hacerCompra(pro.idProducto)}"></p:commandButton>
                                     </div>
                                 </div>
                             </div>
