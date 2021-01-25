@@ -36,6 +36,7 @@ public class ProductoController implements Serializable {
     double totalPagar = 0.0;
     int cantidad = 1;
     int contador = 0;
+    private int testOk=0;
     logCarritoCompras log= new logCarritoCompras();
 
     /**
@@ -66,7 +67,7 @@ public class ProductoController implements Serializable {
         }
     }
 
-    public void consultarProducto(int id) {
+    public int consultarProducto(int id) {
         try {
             productoDto1 = facadeImpl.listarProductoId(id);
             item = item + 1;
@@ -82,7 +83,9 @@ public class ProductoController implements Serializable {
             contador = listaCarrito.size();
         } catch (Exception e) {
             log.setLogError("error al consultar producto por id:" + e.getMessage());
+            testOk= 1;
         }
+        return testOk;
     }
 
     public String hacerCompra(int id) {
@@ -195,4 +198,13 @@ public class ProductoController implements Serializable {
         this.contador = contador;
     }
 
+    public int getTestOk() {
+        return testOk;
+    }
+
+    public void setTestOk(int testOk) {
+        this.testOk = testOk;
+    }
+
+    
 }
